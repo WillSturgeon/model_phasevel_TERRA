@@ -1,9 +1,10 @@
 % Clear previous data and figures
 close all; clear all; clc;
 
+%list of TERRA models (.nc) format, which are currently stored on the external hard-drive called 'Monika'.
 models = [
-%"/compressible_400/compressible_400----conv",
-%"/incompresssible_400/incompressible_400----conv",
+"/compressible_400/compressible_400----conv",
+"/incompresssible_400/incompressible_400----conv",
 "/CMB2600/CMB2600----conv",
 "/CMB2600_scale/CMB2600_scale----conv",
 "/CMB2800/CMB2800----conv",
@@ -380,8 +381,7 @@ models = [
 % Specify the path to the NetCDF file
 for i=1:length(models)
 model=models(i);model=string(model)
-% ncfile = strcat("/Volumes/MC2/TERRA_models_Franck_adiabat/convert',model); %Franck models without the adiabat for the incompressible models
-ncfile = strcat("/Volumes/Monika/convert",model); %Franck models with adiabat for the incompressible models
+ncfile = strcat("/Volumes/Monika/convert",model);
 ncfile=string(ncfile);
 % Define parameters including 'depths'
 parameters = {'vs', 'vp', 'density'};
@@ -447,7 +447,6 @@ for depth_index = 1:numel(depths)
         param_first_layer_new_flat = param_first_layer_new_flat(~nan_indices);
 
         % Save the output file for the current parameter with depth value in the name
-        %output_file = strcat("/Volumes/MC2/TERRA_models_Franck/convert',model,'_',parameter_name,'_depth_',num2str(depth_value),'km.xy');
         output_file = strcat("/Volumes/Monika/convert/",model,'_',parameter_name,'_depth_',num2str(depth_value),'km_2x2.xy');
         output_file=string(output_file);
         output_data = [new_lon_flat, new_lat_flat, param_first_layer_new_flat];
