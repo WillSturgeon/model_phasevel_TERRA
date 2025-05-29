@@ -118,16 +118,17 @@ c---------------------- MC2 modes! ---------------------
      + 197,198,200,202,216,223,225,234,235,251,253,254,271,275,
      + 291,320,342,382,415 /)
 
-c Open the 'TERRA_modellist.txt file and read model paths. currently there are 67 TERRA models
-      open(unit=101, file='../TERRA_modellist_April2025.txt',
+c Open the 'TERRA_modellist.txt file and read model paths. currently there are 67 TERRA models.
+c note that if there's a different number of models, you must change the definition on line 100.
+
+      open(unit=101, file='../TERRA_modellist.txt',
      1  status='old', action='read')
       do l = 1,numModels
         read(101,'(A)') modelLine(l)
       end do
       close(101)
-c      write(*,*)'after modellist'
-c Read the list of files from TERRA_filelist.txt
 
+c Read the list of files from TERRA_filelist.txt, these are the lat/lon files.
       open(unit=100,file='../TERRA_filelist.txt',
      1  status='old',action='read')
       numFiles = 0
@@ -173,29 +174,10 @@ c      write(*,*) 'firstpart ', trim(firstpart)
 c      write(*,*) 'part3 ', trim(part3)
 c      write(*,*) 'newVar ', trim(newVar)
 c      write(*,*) 'part4 ', trim(part4)
-
-
-
 c      write(*,*)'---> ', finalPath
 
       model_file = trim(finalPath)
       write(*,*) j, model_file
-
-c c-----  load reference model
-c       write(*,*) "------------------------------------------"
-c       write(*,*) 'model_file ',model_file,mm
-
-c-----  load reference model (original count)
-c       open(112,file=model_file,status="old",access="sequential")
-c       read(112,'(a)') premstr
-c       read(112,*) premifanis, premtref, premifdeck
-c       read(112,*) premnm, premnic, premnoc
-c       do i = 1, premnm
-c         read(112,201) prrad(i), prrho(i), prvpv(i), prvsv(i),
-c      1                 prqka(i), prqmu(i), prvph(i), prvsh(i), preta(i)
-c       end do
-c       close(112)
-c   201  format(f8.0,3f9.2,2f9.1,2f9.2,f9.5)
 
 c----- load reference model + insert zero‐depth layer at top
       open(112,file=model_file,status='old',access='sequential')
@@ -260,12 +242,6 @@ c      nmaxin=5
 
 c            ! — initialize the output‐directory string so we don’t pass garbage —
       outputs_dir = '/media/will/Monika1/convert'
-c       model_file='/home/will/Documents/rapid_mineos/'
-c      1 // 'models/prem_noocean.txt'
-c       model_file='/media/will/MC2/TERRA_models_Franck/'
-c      1 // 'convert/106_scale/mineos_profiles_106_scale'
-c      1 // '----conv/-10.0_-10.0.txt'
-
 
 c-----------------------------------------------------------------------
       call forward_model_mineos(
@@ -273,13 +249,6 @@ c-----------------------------------------------------------------------
      1 wgravin,lminin,lmaxin,wminin,wmaxin,nminin,nmaxin,
      1 model_file,outputs_dir,premnm)
 
-      write(*,*)'pppppp'
-
-c      write(path1,'(A)') "/data/will/TERRA/muller_cmb_temp/"
-c     1 "muller_3000/",
-c     1 trim(model_file),
-c     1 "_out.txt"
-c     Find position of ".txt" in inputFileName
       pos = index(inputFileName, '.txt')
 
 c     If ".txt" is found, construct path1 without ".txt"
