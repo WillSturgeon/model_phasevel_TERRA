@@ -8,10 +8,12 @@ This matlab script converts the TERRA cartesian grid to a regular 2x2 degree gri
 -- 2. -- make_profiles_CRUST1.py  
 This python script makes mineos profiles at each point on the grid. It uses PREM for Qmu, Qk and eta. The models are isotropic (Vsv=Vsh, Vpv=Vph). The crust is defined by CRUST1.0.  
 
+*** Next you must install rapid_mineos, which you can find in my Github (along with installation instructions). ***  
+
 -- 3. -- main_TERRA_loop_allmodels_allmodes.f  
-This routine calls rapid_mineos.f (which is in my Github respository, which includes installation info) to predict phase vel, group vel, attenuation at specified modes.  
-This script is used as part of the rapid_mineos package. You must copy this script to main.f and then recompile.
-Currently this script is only set-up for fundamental modes, so you need to uncomment certain parts for the overtones and set nmax to e.g. 4 (instead of 0).
+This routine calls mineos to predict phase vel, group vel, attenuation at specified modes.  
+This script is used as part of the rapid_mineos package. You must replace main.f in rapid_mineos with main_TERRA_loop_allmodels_allmodes.f. 
+Currently this script is only set-up for fundamental modes. If in the future you wish to predict overtones, then you can uncomment certain parts of the code.
 
 -- 4. -- interp_TERRAtoPREM_loop.py  
 This interpolates the phase vel/group vel/attenuation predictions at specific periods (in my case, at the specific periods of the hvh2 phase velocity measurements).  
