@@ -2,7 +2,7 @@
 Part of the Mantle Circulation Constrained (MC^2) Project.  
 Predict frequency-dependent surface wave phase velocity (and group velocity/attenuation) maps from TERRA models. Fundamental mode and overtones using MINEOS.  
 
--- interpolate_TERRAgrid_to_Regular_grid.m  
+-- interpolate_TERRAgrid_to_geogrid.m  
 This matlab script converts the TERRA cartesian grid to a regular 2x2 degree grid.  
 
 -- make_profiles_CRUST1.py  
