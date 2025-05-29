@@ -3,9 +3,14 @@ import os
 import subprocess
 import multiprocessing
 
+# This script interpolates the data to the exact periods at which the observed data (e.g. PREM or hvh2) is provided.
+# This script can run in parralel, defined on line 81. e.g. to 20 processes, set (pool = multiprocessing.Pool(processes=20))
+
 # Setup directory and PREM data
-base_directory = "/media/will/WS"
-model_list_path = "/home/will/Documents/rapid_mineos/TERRA_modellist_April2025.txt"
+# base_directory is where the phase vel/group vel/attenuation TERRA prediction files are located.
+base_directory = "/Volumes/Monika/convert/"
+# model_list_path is a list of the TERRA models that you want to run.
+model_list_path = "/TERRA_modellist.txt"
 
 # Modes and their corresponding PREM periods
 modes = [28, 35, 43, 51, 61, 72, 84, 98, 112, 127, 144, 161, 179, 198, 216, 235, 253, 271]
