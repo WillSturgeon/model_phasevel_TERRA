@@ -11,7 +11,7 @@ This python script makes mineos profiles at each point on the grid. It uses PREM
 -- main_TERRA_loop_allmodels_allmodes.f  
 This routine calls rapid_mineos.f to predict phase vel, group vel, attenuation at specified modes.  
 
--- interp_TERRAtoPREM.py  
+-- interp_TERRAtoPREM_loop.py  
 This interpolates the phase vel/group vel/attenuation predictions at specific periods (in my case, at the specific periods of the hvh2 phase velocity measurements).  
 
 -- make_TERRA_pred_maps.py  
