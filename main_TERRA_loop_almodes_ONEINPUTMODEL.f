@@ -111,30 +111,6 @@ c---------------------- MC2 modes! ---------------------
      + 197,198,200,202,216,223,225,234,235,251,253,254,271,275,
      + 291,320,342,382,415 /)
 
-c Open the 'TERRA_modellist.txt file and read model paths. currently there are 67 TERRA models
-c      open(unit=101, file='../TERRA_modellist.txt', status='old',
-c     1 action='read')
-c      do l = 1,numModels
-c        read(101,'(A)') modelLine(l)
-c      end do
-c      close(101)
-c      write(*,*)'after modellist'
-c Read the list of files from TERRA_filelist.txt
-
-c      open(unit=100,file='../TERRA_filelist.txt', 
-c     1 status='old', action='read')
-c      numFiles = 0
-c      do i = 1,maxFiles
-c        read(100,'(A)') fileList(i)
-c        numFiles = numFiles + 1
-c      end do
-c      close(100)
-
-c Loop over each model path read from the file
-c      do modelIdx = 1, numModels 
-c      do modelIdx = 4,numModels
-c      do modelIdx = 67,67
-
       CALL GET_COMMAND_ARGUMENT(1,partX)
       CALL GET_COMMAND_ARGUMENT(2,inputFileName)
 
@@ -144,15 +120,6 @@ c      write(*,*)'inputFileName ',inputFileName
 
 c      part2 = trim(modelLine(modelIdx))
 c      write(*,*) 'model = ', part2
-      
-c Loop over each file in the list
-c      do j = 1,maxFiles
-c        inputFileName = trim(fileList(j))
-
-c      part1 = '/data/will/TERRA'
-c      part3 = 'mineos_profiles_python_CRUST1_linecount/'
-c      part4 = trim(inputFileName)
-c      finalPath = trim(part1) // trim(part2) // trim(part3) // part4
 
       part2 = trim(partX)
 c      write(*,*) 'model = ', part2
@@ -172,7 +139,6 @@ c      write(*,*)'========> ',newVar, ' --- ',firstpart
 
 c Output the result to verify
 c      write(*,*) 'After second slash: ', trim(newVar)
-
 
       part1 = '/media/will/Monika1/convert'
       part3 = '/mineos_profiles_'
@@ -220,17 +186,6 @@ c-----------------------------------------------------------------------
      1 phvel_all,grvel_all,lorder_all,attn_all,per_all,jcomin,epsin,
      1 wgravin,lminin,lmaxin,wminin,wmaxin,nminin,nmaxin,
      1 model_file,outputs_dir,premnm)
-
-c      write(path1,'(A)') "/media/will/will_green/TERRA/muller_cmb_temp/"
-c     1 "muller_3000/",
-c     1 trim(model_file),
-c     1 "_out.txt"
-
-c      ! Define path_new
-c      path_new = '/media/will/will_green/TERRA' // trim(part2)
-
-c!  create it
-c      call system('mkdir -p ' // trim(path_new))
      
 c     Find position of ".txt" in inputFileName
       pos = index(inputFileName, '.txt')
