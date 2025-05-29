@@ -35,3 +35,5 @@ This routine expands the grid maps into spherical harmonics coefficients.
 
 -- 7. -- run_hphase_R_testing_loop.sh
 calls hphase_tomofilt.f. This applys the tomographic filter of the obseved phase velocity map (hvh2) to the predicted phase velocity map.  
+
+Then finally, add GMT plotting scripts (maybe in a new repository).
