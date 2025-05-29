@@ -20,111 +20,6 @@ prem_properties = crust2[:, 1:9]  # Includes density, vpv, vsv, Qmu, Qk, vph, vs
 
 # Define model paths
 
-# models = [
-#     '/106_scale/106_scale----conv','/107_scale/107_scale----conv', '/108_scale/108_scale----conv', '/256_044_3800_lith_scl/256_044_3800_lith_scl----conv',
-#     '/256_044_3800_lith_scl_1/256_044_3800_lith_scl_1----conv', '/256_044_4000_1/256_044_4000_1----conv',
-#     '/BB000/BB000----conv', '/BB022/BB022----conv', '/BB033/BB033----conv', '/BB044/BB044----conv',
-#     '/BB055/BB055--ceb--conv', '/BB055/BB055--crust--conv', '/BB055/BB055--fsp--conv', '/BB066/BB066--ceb--conv',
-#     '/BB066/BB066--crust--conv', '/BB066/BB066--fsp--conv', '/BB066_tvisc/BB066_tvisc----conv',
-#     '/BB088/BB088--ceb--conv', '/BB088/BB088--crust--conv', '/BB088/BB088--fsp--conv', '/CC/CC----conv',
-#     '/CC_highT/CC_highT----conv', '/CC_highT_prim/CC_highT_prim--ceb--conv', '/CC_highT_prim/CC_highT_prim--crust--conv',
-#     '/CC_highT_prim/CC_highT_prim--fsp--conv', '/CC_lowT/CC_lowT----conv', '/CC_lowT_prim/CC_lowT_prim--ceb--conv',
-#     '/CC_lowT_prim/CC_lowT_prim--crust--conv', '/CC_lowT_prim/CC_lowT_prim--fsp--conv', '/CC_prim/CC_prim--ceb--conv',
-#     '/CC_prim/CC_prim--crust--conv', '/CC_prim/CC_prim--fsp--conv', '/CMB2600/CMB2600----conv',
-#     '/CMB2600_2/CMB2600_2----conv', '/CMB2600_2_prim/CMB2600_2_prim--ceb--conv', '/CMB2600_2_prim/CMB2600_2_prim--crust--conv',
-#     '/CMB2600_2_prim/CMB2600_2_prim--fsp--conv', '/CMB2600_2_prim_tvisc/CMB2600_2_prim_tvisc--ceb--conv',
-#     '/CMB2600_2_prim_tvisc/CMB2600_2_prim_tvisc--crust--conv', '/CMB2600_2_prim_tvisc/CMB2600_2_prim_tvisc--fsp--conv',
-#     '/CMB2600_2_tvisc/CMB2600_2_tvisc----conv', '/CMB2600_scale/CMB2600_scale----conv', '/CMB2800/CMB2800----conv',
-#     '/CMB2800_2/CMB2800_2----conv', '/CMB2800_2_prim/CMB2800_2_prim--ceb--conv', '/CMB2800_2_prim/CMB2800_2_prim--crust--conv',
-#     '/CMB2800_2_prim/CMB2800_2_prim--fsp--conv', '/CMB2800_2_prim_tvisc/CMB2800_2_prim_tvisc--ceb--conv',
-#     '/CMB2800_2_prim_tvisc/CMB2800_2_prim_tvisc--crust--conv', '/CMB2800_2_prim_tvisc/CMB2800_2_prim_tvisc--fsp--conv',
-#     '/CMB2800_2_tvisc/CMB2800_2_tvisc----conv', '/CMB2800_scale/CMB2800_scale----conv', '/CMB3000/CMB3000----conv',
-#     '/CMB3000_2/CMB3000_2----conv', '/CMB3000_2_prim/CMB3000_2_prim--ceb--conv', '/CMB3000_2_prim/CMB3000_2_prim--crust--conv',
-#     '/CMB3000_2_prim/CMB3000_2_prim--fsp--conv', '/CMB3000_2_prim_tvisc/CMB3000_2_prim_tvisc--ceb--conv',
-#     '/CMB3000_2_prim_tvisc/CMB3000_2_prim_tvisc--crust--conv', '/CMB3000_2_prim_tvisc/CMB3000_2_prim_tvisc--fsp--conv',
-#     '/CMB3000_2_tvisc/CMB3000_2_tvisc----conv', '/CMB3000_scale/CMB3000_scale----conv', '/CMB3200/CMB3200----conv',
-#     '/CMB3200_scale/CMB3200_scale----conv', '/CMB3400/CMB3400----conv', '/CMB3400_scale/CMB3400_scale----conv',
-#     '/CMB3600M/CMB3600M----conv', '/CMB3800M/CMB3800M----conv', '/CMB4000M/CMB4000M----conv',
-#     '/compressible_400/compressible_400----conv', '/icond005/icond005----conv', '/icond009/icond009----conv',
-#     '/incompressible_400/incompressible_400----conv', '/m_022_tv1_prim_u/m_022_tv1_prim_u--ceb--conv',
-#     '/m_022_tv1_prim_u/m_022_tv1_prim_u--crust--conv', '/m_022_tv1_prim_u/m_022_tv1_prim_u--fsp--conv',
-#     '/m_022_tv1_u/m_022_tv1_u----conv', '/m_044_tv1_prim_u/m_044_tv1_prim_u--ceb--conv',
-#     '/m_044_tv1_prim_u/m_044_tv1_prim_u--crust--conv', '/m_044_tv1_prim_u/m_044_tv1_prim_u--fsp--conv',
-#     '/m_044_tv1_u/m_044_tv1_u----conv', '/m_066_tv1_prim_u/m_066_tv1_prim_u--ceb--conv',
-#     '/m_066_tv1_prim_u/m_066_tv1_prim_u--crust--conv', '/m_066_tv1_prim_u/m_066_tv1_prim_u--fsp--conv',
-#     '/m_066_tv1_u/m_066_tv1_u----conv', '/m_bas/m_bas----conv', '/m_bb_000/m_bb_000----conv',
-#     '/m_bb_000_tvisc/m_bb_000_tvisc----conv', '/m_bb_022/m_bb_022----conv', '/m_bb_022_tvisc/m_bb_022_tvisc----conv',
-#     '/m_bb_022_tvisc1/m_bb_022_tvisc1----conv', '/m_bb_022_tvisc1_prim/m_bb_022_tvisc1_prim--ceb--conv',
-#     '/m_bb_022_tvisc1_prim/m_bb_022_tvisc1_prim--crust--conv', '/m_bb_022_tvisc1_prim/m_bb_022_tvisc1_prim--fsp--conv',
-#     '/m_bb_044/m_bb_044----conv', '/m_bb_044_tvisc/m_bb_044_tvisc----conv', '/m_bb_044_tvisc1/m_bb_044_tvisc1----conv',
-#     '/m_bb_044_tvisc1_prim/m_bb_044_tvisc1_prim--ceb--conv', '/m_bb_044_tvisc1_prim/m_bb_044_tvisc1_prim--crust--conv',
-#     '/m_bb_044_tvisc1_prim/m_bb_044_tvisc1_prim--fsp--conv', '/m_bb_066/m_bb_066----conv',
-#     '/m_bb_066_tvisc/m_bb_066_tvisc----conv', '/m_bb_066_tvisc1/m_bb_066_tvisc1----conv',
-#     '/m_bb_066_tvisc1_comp/m_bb_066_tvisc1_comp----conv', '/m_bb_066_tvisc1_comp38/m_bb_066_tvisc1_comp38----conv',
-#     '/m_bb_066_tvisc1_prim/m_bb_066_tvisc1_prim--ceb--conv', '/m_bb_066_tvisc1_prim/m_bb_066_tvisc1_prim--crust--conv',
-#     '/m_bb_066_tvisc1_prim/m_bb_066_tvisc1_prim--fsp--conv', '/m_bb_066_tvisc1_prim_comp/m_bb_066_tvisc1_prim_comp--ceb--conv',
-#     '/m_bb_066_tvisc1_prim_comp/m_bb_066_tvisc1_prim_comp--crust--conv', '/m_bb_066_tvisc1_prim_comp/m_bb_066_tvisc1_prim_comp--fsp--conv',
-#     '/m_bb_066_tvisc1_prim_comp38/m_bb_066_tvisc1_prim_comp38--ceb--conv', '/m_bb_066_tvisc1_prim_comp38/m_bb_066_tvisc1_prim_comp38--crust--conv',
-#     '/m_bb_066_tvisc1_prim_comp38/m_bb_066_tvisc1_prim_comp38--fsp--conv', '/m_bb_088/m_bb_088----conv',
-#     '/m_bb_088_tvisc/m_bb_088_tvisc----conv', '/m_cc/m_cc----conv', '/m_cc_022_u/m_cc_022_u----conv',
-#     '/m_cc_022_u_prim/m_cc_022_u_prim--ceb--conv', '/m_cc_022_u_prim/m_cc_022_u_prim--crust--conv',
-#     '/m_cc_022_u_prim/m_cc_022_u_prim--fsp--conv', '/m_cc_044_u/m_cc_044_u----conv',
-#     '/m_cc_044_u_prim/m_cc_044_u_prim--ceb--conv', '/m_cc_044_u_prim/m_cc_044_u_prim--crust--conv',
-#     '/m_cc_044_u_prim/m_cc_044_u_prim--fsp--conv', '/m_cc_066_u/m_cc_066_u----conv',
-#     '/m_cc_066_u_prim/m_cc_066_u_prim--ceb--conv', '/m_cc_066_u_prim/m_cc_066_u_prim--crust--conv',
-#     '/m_cc_066_u_prim/m_cc_066_u_prim--fsp--conv', '/m_cc_hi/m_cc_hi----conv', '/m_cc_hi_prim/m_cc_hi_prim--ceb--conv',
-#     '/m_cc_hi_prim/m_cc_hi_prim--crust--conv', '/m_cc_hi_prim/m_cc_hi_prim--fsp--conv', '/m_cc_lo/m_cc_lo----conv',
-#     '/m_cc_lo_prim/m_cc_lo_prim--ceb--conv', '/m_cc_lo_prim/m_cc_lo_prim--crust--conv', '/m_cc_lo_prim/m_cc_lo_prim--fsp--conv',
-#     '/m_cc_prim/m_cc_prim--ceb--conv', '/m_cc_prim/m_cc_prim--crust--conv', '/m_cc_prim/m_cc_prim--fsp--conv',
-#     '/m_comp1/m_comp1----conv', '/m_jump_10/m_jump_10----conv', '/m_jump_20/m_jump_20----conv',
-#     '/m_lhz/m_lhz----conv', '/m_precond_100/m_precond_100----conv', '/m_precond_100_rr/m_precond_100_rr----conv',
-#     '/m_precond_50/m_precond_50----conv', '/m_thermal_het/m_thermal_het----conv', '/m_thermal_hom/m_thermal_hom----conv',
-#     '/m_visc1/m_visc1----conv', '/m_visc1_tvisc/m_visc1_tvisc----conv', '/m_visc2/m_visc2----conv',
-#     '/m_visc2_tvisc/m_visc2_tvisc----conv', '/m_visc3/m_visc3----conv', '/m_visc3_tvisc/m_visc3_tvisc----conv',
-#     '/m_visc4/m_visc4----conv', '/m_visc4_tvisc/m_visc4_tvisc----conv', '/m_viscav_10/m_viscav_10----conv',
-#     '/m_viscav_2/m_viscav_2----conv', '/mcmb_2600_prim_u/mcmb_2600_prim_u--ceb--conv',
-#     '/mcmb_2600_prim_u/mcmb_2600_prim_u--crust--conv', '/mcmb_2600_prim_u/mcmb_2600_prim_u--fsp--conv',
-#     '/mcmb_2600_u/mcmb_2600_u----conv', '/mcmb_2800_prim_u/mcmb_2800_prim_u--ceb--conv',
-#     '/mcmb_2800_prim_u/mcmb_2800_prim_u--crust--conv', '/mcmb_2800_prim_u/mcmb_2800_prim_u--fsp--conv',
-#     '/mcmb_2800_u/mcmb_2800_u----conv', '/mcmb_3000_prim_u/mcmb_3000_prim_u--ceb--conv',
-#     '/mcmb_3000_prim_u/mcmb_3000_prim_u--crust--conv', '/mcmb_3000_prim_u/mcmb_3000_prim_u--fsp--conv',
-#     '/mcmb_3000_u/mcmb_3000_u----conv', '/mcmbc_3600_prim_u/mcmbc_3600_prim_u--ceb--conv',
-#     '/mcmbc_3600_prim_u/mcmbc_3600_prim_u--crust--conv', '/mcmbc_3600_prim_u/mcmbc_3600_prim_u--fsp--conv',
-#     '/mcmbc_3600_u/mcmbc_3600_u----conv', '/mcmbc_3800_prim_u/mcmbc_3800_prim_u--ceb--conv',
-#     '/mcmbc_3800_prim_u/mcmbc_3800_prim_u--crust--conv', '/mcmbc_3800_prim_u/mcmbc_3800_prim_u--fsp--conv',
-#     '/mcmbc_3800_u/mcmbc_3800_u----conv', '/mcmbc_4000_prim_u/mcmbc_4000_prim_u--ceb--conv',
-#     '/mcmbc_4000_prim_u/mcmbc_4000_prim_u--crust--conv', '/mcmbc_4000_prim_u/mcmbc_4000_prim_u--fsp--conv',
-#     '/mcmbc_4000_u/mcmbc_4000_u----conv', '/muller_2600/muller_2600----conv',
-#     '/muller_2600_prim/muller_2600_prim--ceb--conv', '/muller_2600_prim/muller_2600_prim--crust--conv',
-#     '/muller_2600_prim/muller_2600_prim--fsp--conv', '/muller_2800/muller_2800----conv',
-#     '/muller_2800_prim/muller_2800_prim--ceb--conv', '/muller_2800_prim/muller_2800_prim--crust--conv',
-#     '/muller_2800_prim/muller_2800_prim--fsp--conv', '/muller_3000/muller_3000----conv',
-#     '/muller_3000_prim/muller_3000_prim--ceb--conv', '/muller_3000_prim/muller_3000_prim--crust--conv',
-#     '/muller_3000_prim/muller_3000_prim--fsp--conv', '/PR_3/PR_3--ceb--conv', '/PR_3/PR_3--crust--conv',
-#     '/PR_3/PR_3--fsp--conv', '/PR_4/PR_4--ceb--conv', '/PR_4/PR_4--crust--conv',
-#     '/PR_4/PR_4--fsp--conv', '/PR_4_150/PR_4_150--ceb--conv', '/PR_4_150/PR_4_150--crust--conv',
-#     '/PR_4_150/PR_4_150--fsp--conv', '/PR_5/PR_5--ceb--conv', '/PR_5/PR_5--crust--conv',
-#     '/PR_5/PR_5--fsp--conv', '/PR_5_150/PR_5_150--ceb--conv', '/PR_5_150/PR_5_150--crust--conv',
-#     '/PR_5_150/PR_5_150--fsp--conv', '/PR_6/PR_6--ceb--conv', '/PR_6/PR_6--crust--conv',
-#     '/PR_6/PR_6--fsp--conv', '/PR_6_150/PR_6_150--ceb--conv', '/PR_6_150/PR_6_150--crust--conv',
-#     '/PR_6_150/PR_6_150--fsp--conv', '/PR_8/PR_8--ceb--conv', '/PR_8/PR_8--crust--conv',
-#     '/PR_8/PR_8--fsp--conv', '/primordial_3/primordial_3--ceb--conv',
-#     '/primordial_3/primordial_3--crust--conv', '/primordial_3/primordial_3--fsp--conv',
-#     '/primordial_4/primordial_4--ceb--conv', '/primordial_4/primordial_4--crust--conv',
-#     '/primordial_4/primordial_4--fsp--conv', '/primordial_5/primordial_5--ceb--conv',
-#     '/primordial_5/primordial_5--crust--conv', '/primordial_5/primordial_5--fsp--conv',
-#     '/primordial_6/primordial_6--ceb--conv', '/primordial_6/primordial_6--crust--conv',
-#     '/primordial_6/primordial_6--fsp--conv', '/primordial_8/primordial_8--ceb--conv',
-#     '/primordial_8/primordial_8--crust--conv', '/primordial_8/primordial_8--fsp--conv',
-#     '/tempVisc/tempVisc----conv', '/tempViscComp/tempViscComp----conv',
-#     '/thermal/thermal----conv', '/thermal2/thermal2----conv',
-#     '/visc2/visc2----conv', '/visc3/visc3----conv',
-#     '/visc4/visc4----conv', '/visc4_incomp/visc4_incomp----conv',
-#     '/visc5/visc5----conv', '/visc5_incomp/visc5_incomp----conv',
-#     '/visc6/visc6----conv', '/visc6_incomp/visc6_incomp----conv',
-#     '/visc7/visc7----conv', '/visc7_incomp/visc7_incomp----conv'
-# ]
-
 models = [
 # 'incompressible_400/incompressible_400----conv',
 # 'CMB2600/CMB2600----conv',
@@ -301,10 +196,10 @@ models = [
 # 'mcmb_3000_prim_u/mcmb_3000_prim_u--crust--conv',
 # 'mcmb_3000_prim_u/mcmb_3000_prim_u--fsp--conv',
 # 'mcmb_3000_prim_u/mcmb_3000_prim_u--ceb--conv',
-'256_044_cc/256_044_cc----conv',
-'256_044_4000_1/256_044_4000_1----conv',
-'256_044_3800_lith_scl/256_044_3800_lith_scl----conv',
-'256_044_3800_lith_scl_1/256_044_3800_lith_scl_1----conv',
+# '256_044_cc/256_044_cc----conv',
+# '256_044_4000_1/256_044_4000_1----conv',
+# '256_044_3800_lith_scl/256_044_3800_lith_scl----conv',
+# '256_044_3800_lith_scl_1/256_044_3800_lith_scl_1----conv',
 # 'm_lhz/m_lhz----conv',
 # 'm_bas/m_bas----conv',
 # 'u_recy0/u_recy0----conv',
@@ -359,7 +254,7 @@ models = [
 ]
 
 # Specify the base path for TERRA model files
-base_path = '/Volumes/Monika/TERRA_models_Franck_adiabat/convert_adiabat/'
+base_path = '/Volumes/Monika/convert/'
 
 for model in models:
     model_name = model.split('/')[-1]  # Get the full model name (e.g., '106_scale----conv')
@@ -378,6 +273,7 @@ for model in models:
     longitude = infile_density[:, 0]
     latitude = infile_density[:, 1]
 
+    # for 128 resolution models
     # depths = ['2890', '2844.8438', '2799.6875', '2754.5312', '2709.375', '2664.2188', '2619.0625', '2573.9062', '2528.75', '2483.5938',
     #           '2438.4375', '2393.2812', '2348.125', '2302.9688', '2257.8125', '2212.6562', '2167.5', '2122.3438', '2077.1875', '2032.0312',
     #           '1986.875', '1941.7188', '1896.5625', '1851.4062', '1806.25', '1761.0938', '1715.9375', '1670.7812', '1625.625', '1580.4688',
@@ -386,23 +282,7 @@ for model in models:
     #           '632.1875', '587.0312', '541.875', '496.7188', '451.5625', '406.4062', '361.25', '316.0938', '270.9375', '225.7812',
     #           '180.625', '135.4688', '90.3125', '45.1562']
 
-    # for 256 res models. incompressible_400
-    # depths = ['2890', '2867.4221', '2844.8438', '2822.2654', '2799.6875', '2777.1096', '2754.5312', '2731.9529', '2709.375',
-    #  '2686.7971', '2664.2188', '2641.6404', '2619.0625', '2596.4846', '2573.9062', '2551.3279', '2528.75', '2506.1721', '2483.5938',
-    #  '2461.0154', '2438.4375', '2415.8596', '2393.2812', '2370.7029', '2348.125', '2325.5471', '2302.9688', '2280.3904', '2257.8125',
-    #  '2235.2344', '2212.6562', '2190.0781', '2167.5', '2144.9219', '2122.3438', '2099.7656', '2077.1875', '2054.6094', '2032.0312',
-    #  '2009.4531', '1986.875', '1964.2969', '1941.7188', '1919.1406', '1896.5625', '1873.9844', '1851.4062', '1828.8281', '1806.25',
-    #  '1783.6719', '1761.0938', '1738.5156', '1715.9375', '1693.3594', '1670.7812', '1648.2031', '1625.625', '1603.0469', '1580.4688',
-    #  '1557.8906', '1535.3125', '1512.7344', '1490.1562', '1467.5781', '1445', '1422.4219', '1399.8438', '1377.2656', '1354.6875',
-    #  '1332.1094', '1309.5312', '1286.9531', '1264.375', '1241.7969', '1219.2188', '1196.6406', '1174.0625', '1151.4844', '1128.9062',
-    #  '1106.3281', '1083.75', '1061.1719', '1038.5938', '1016.0156', '993.4375', '970.8594', '948.2812', '925.7031', '903.125',
-    #  '880.5469', '857.9688', '835.3906', '812.8125', '790.2344', '767.6562', '745.0781', '722.5', '699.9219', '677.3438', '654.7656',
-    #  '632.1875', '609.6094', '587.0312', '564.4531', '541.875', '519.2969', '496.7188', '474.1406', '451.5625', '428.9844', '406.4062',
-    #  '383.8281', '361.25', '338.6719', '316.0938', '293.5156', '270.9375', '248.3594', '225.7812', '203.2031', '180.625', '158.0469',
-    #  '135.4688', '112.8906', '90.3125', '67.7344', '45.1558', '22.5781']
-    
-        # for 256 res models.
-
+    # for 256 res models.
     depths = ['2890', '2867.4219', '2844.8438', '2822.2656', '2799.6875', '2777.1094', '2754.5312', '2731.9531', '2709.375', '2686.7969',
               '2664.2188', '2641.6406', '2619.0625', '2596.4844', '2573.9062', '2551.3281', '2528.75', '2506.1719', '2483.5938', '2461.0156',
               '2438.4375', '2415.8594', '2393.2812', '2370.7031', '2348.125', '2325.5469', '2302.9688', '2280.3906', '2257.8125', '2235.2344',
