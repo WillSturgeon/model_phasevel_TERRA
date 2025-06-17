@@ -37,7 +37,7 @@
       character*1 typeo_eigen
       character*35 path
 
-      ! only one buf‐alias, no stray scalar 'buf'!
+c      ! only one buf‐alias, no stray scalar 'buf'!
       real*4 abuf
       common/c_eigen/norder_eigen,lorder_eigen,
      +      eigid_eigen,per_eigen,phvel_eigen,grvel_eigen,
@@ -108,101 +108,77 @@ c New variables for file processing
 
 c------------- build model, mineos format --------------
 
+c      c New variables for command-line parsing
+      character(len=256) :: model_arg, modelbase, modelprofile_dir
+      character*256      model_parent     
+      integer :: argstat, pos_slash
+      character(len=512) :: outdir   
+      logical :: lzero
+      integer :: nic_int
 
-c------------- build model, mineos format -------------- 
-c---------------------- 0S (0:56) ----------------------
-c---------------------- MC2 modes! ---------------------
-      durand_modes=(/018,019,021,022,023,025,027,028,030,032,
-     + 034,035,038,043,049,051,057,061,066,072,076,079,084,097,
-     + 098,108,111,112,123,127,132,141,143,144,161,166,167,179,
-     + 197,198,200,202,216,223,225,234,235,251,253,254,271,275,
-     + 291,320,342,382,415 /)
+c      !-----------------------------------------------------------------------
+c      ! Read command-line arguments and construct model_file path
+c      !-----------------------------------------------------------------------
+      call get_command_argument(1, model_arg, status=argstat)
+      if (argstat /= 0) then
+         write(*,*) 'Error: missing first argument (model path)'
+         stop 1
+      end if
 
-c Open the 'TERRA_modellist.txt file and read model paths. currently there are 67 TERRA models.
-c note that if there's a different number of models, you must change the definition on line 100.
+      call get_command_argument(2, inputFileName, status=argstat)
+      if (argstat /= 0) then
+         write(*,*) 'Error: missing second argument (coordinate file)'
+         stop 1
+      end if
 
-      open(unit=101, file='../TERRA_modellist.txt',
-     1  status='old', action='read')
-      do l = 1,numModels
-        read(101,'(A)') modelLine(l)
+c      ! Extract basename from model_arg (after last '/')
+      pos_slash = 0
+      do i = 1, len_trim(model_arg)
+         if (model_arg(i:i) == '/') pos_slash = i
       end do
-      close(101)
+      if (pos_slash > 0) then
+         modelbase = model_arg(pos_slash+1:len_trim(model_arg))
+      else
+         modelbase = trim(model_arg)
+      end if
 
-c Read the list of files from TERRA_filelist.txt, these are the lat/lon files.
-      open(unit=100,file='../TERRA_filelist.txt',
-     1  status='old',action='read')
-      numFiles = 0
-      do i = 1,maxFiles
-        read(100,'(A)') fileList(i)
-        numFiles = numFiles + 1
-      end do
-      close(100)
+c----- Trim a trailing “----conv” or “--conv” (if present) -------------
+      model_parent = model_arg
+      if (len_trim(model_arg) >= 8 .and.
+     +    model_arg(len_trim(model_arg)-7:len_trim(model_arg))
+     +    == '----conv') then
+         model_parent = model_arg(1:len_trim(model_arg)-8)
+      else if (len_trim(model_arg) >= 6 .and.
+     +         model_arg(len_trim(model_arg)-5:len_trim(model_arg))
+     +         == '--conv') then
+         model_parent = model_arg(1:len_trim(model_arg)-6)
+      end if
 
-c Loop over each model path read from the file
-      do modelIdx = 1, numModels 
-      part2 = trim(modelLine(modelIdx))
-c      write(*,*) 'model = ', part2
+c      ! Build the subdirectory name and final path
+c      ! Build the subdirectory name and final path
+      modelprofile_dir = trim(model_parent)//
+     1  '/mineos_profiles_'//trim(modelbase)
 
-c Find the position of the first '/' in the string
-      firstSlashPos = INDEX(part2, '/')
-
-c Find the position of the second '/' by searching after the first '/'
-      secondSlashPos = INDEX(part2(firstSlashPos+1:), '/') + firstSlashPos
-
-c Extract the substring after the second '/'
-      newVar = part2(secondSlashPos+2:)
-
-c Extract the substring between the two slashes (first part)
-      firstpart = part2(firstSlashPos+1:secondSlashPos-0)
-c      write(*,*)'========> ',newVar, ' --- ',firstpart
-
-c Output the result to verify
-c      write(*,*) 'After second slash: ', trim(newVar)
-      
-c Loop over each file in the list
-      do j = 1,maxFiles
-        inputFileName = trim(fileList(j))
-
-      part1 = '/media/will/Monika1/convert'
-      part3 = '/mineos_profiles_'
-      part4 = trim(inputFileName)
-      finalPath = trim(part1)// "/" // trim(firstpart) // trim(part3) //
-     & trim(newVar) // "/" //trim(part4)
-
-c      write(*,*) 'part1 ', trim(part1)
-c      write(*,*) 'firstpart ', trim(firstpart)
-c      write(*,*) 'part3 ', trim(part3)
-c      write(*,*) 'newVar ', trim(newVar)
-c      write(*,*) 'part4 ', trim(part4)
-c      write(*,*)'---> ', finalPath
-
+      finalPath  = trim(modelprofile_dir)//'/'//trim(inputFileName)
       model_file = trim(finalPath)
-      write(*,*) j, model_file
 
-c----- load reference model + insert zero‐depth layer at top
+c      write(*,*) j, model_file
+
+c-----------------------------------------------------------------------
+c--- LOAD PROFILE ------------------------------------------------------
+c-----------------------------------------------------------------------
       open(112,file=model_file,status='old',access='sequential')
-      read(112,'(a)')             premstr
-      read(112,*)                 premifanis, premtref, premifdeck
-      read(112,*)                 orig_nm, premnic, premnoc        ! original layer count
-      new_premnm = orig_nm + 1                                      
-c      now fill in layer 1 with your zero-depth numbers
-      prrad(1) = 0.0
-      prrho(1) = 13088.50
-      prvpv(1) = 11262.20
-      prvsv(1) = 3667.80
-      prqka(1) = 1327.7
-      prqmu(1) = 84.6
-      prvph(1) = 11262.20
-      prvsh(1) = 3667.80
-      preta(1) = 1.00000
-c     now read the orig_nm real rows into slots 2…new_premnm
-      do i = 1, orig_nm
-        read(112,*) prrad(i+1), prrho(i+1), prvpv(i+1), prvsv(i+1), 
-     1                prqka(i+1), prqmu(i+1), prvph(i+1), prvsh(i+1), 
-     2                preta(i+1)
+
+      read(112,'(A)') premstr
+      read(112,*)     premifanis, premtref, premifdeck
+      read(112,*)     premnm, premnic, premnoc           ! layer count
+
+c----- read all existing layers ----------------------------------------
+      do i = 1, premnm
+         read(112,*) prrad(i), prrho(i), prvpv(i), prvsv(i),
+     1               prqka(i), prqmu(i), prvph(i), prvsh(i), preta(i)
       end do
       close(112)
-      premnm = new_premnm   ! hand the new total back to the rest of the code
 
   201 format(f8.0,3f9.2,2f9.1,2f9.2,f9.5)
 
@@ -237,11 +213,9 @@ c ------- wgrav - frequency in millihertz (mHz) above which gravitational terms 
       wminin=0
       wmaxin=166.0
       nminin=0
-c      nmaxin=5
-      nmaxin=0
+      nmaxin=5
 
-c            ! — initialize the output‐directory string so we don’t pass garbage —
-      outputs_dir = '/media/will/Monika1/convert'
+      outputs_dir = '/media/will/WS/TERRA_predictions'
 
 c-----------------------------------------------------------------------
       call forward_model_mineos(
@@ -249,152 +223,115 @@ c-----------------------------------------------------------------------
      1 wgravin,lminin,lmaxin,wminin,wmaxin,nminin,nmaxin,
      1 model_file,outputs_dir,premnm)
 
+c      write(path1,'(A)') "/data/will/TERRA/muller_cmb_temp/"
+c     1 "muller_3000/",
+c     1 trim(model_file),
+c     1 "_out.txt"
+c     Find position of ".txt" in inputFileName
+
+c  ! e.g. /media/…/TERRA_models/CMB2600----conv
+      outdir = trim(outputs_dir)//'/'//trim(modelbase)  
+c
+      ! Ensure that directory (and parents) exist
+      call execute_command_line('mkdir -p ' // trim(outdir))
+
+c      ! Construct the filename
       pos = index(inputFileName, '.txt')
 
-c     If ".txt" is found, construct path1 without ".txt"
+*-----------------------------------------------------------------------
+*  Build full paths – one variable per overtone (0S … 5S)
+*-----------------------------------------------------------------------
       if (pos > 0) then
-        path1 =  "/media/will/WS/" //trim(newVar) // "/" 
-     1   // trim(inputFileName(:pos-1)) // '_0S_pred_CRUST1.txt'
-        path1=trim(path1)
+         path1 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_0S_pred_CRUST1.txt'
+         path2 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_1S_pred_CRUST1.txt'
+         path3 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_2S_pred_CRUST1.txt'
+         path4 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_3S_pred_CRUST1.txt'
+         path5 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_4S_pred_CRUST1.txt'
+         path6 = trim(outdir)//'/'//
+     1            trim(inputFileName(:pos-1))//'_5S_pred_CRUST1.txt'
       else
-        path1 =  "/media/will/WS/" //trim(newVar) // "/" 
-     1          // trim(inputFileName) // '_0S_pred_CRUST1.txt'
-        path1=trim(path1)
+         path1 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_0S_pred_CRUST1.txt'
+         path2 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_1S_pred_CRUST1.txt'
+         path3 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_2S_pred_CRUST1.txt'
+         path4 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_3S_pred_CRUST1.txt'
+         path5 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_4S_pred_CRUST1.txt'
+         path6 = trim(outdir)//'/'//
+     1            trim(inputFileName)//'_5S_pred_CRUST1.txt'
       end if
 
-c c     If ".txt" is found, construct path2 without ".txt"
-c       if (pos > 0) then
-c         path2 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1   // trim(inputFileName(:pos-1)) // '_1S_pred_CRUST1.txt'
-c         path2=trim(path1)
-c       else
-c         path2 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1          // trim(inputFileName) // '_1S_pred_CRUST1.txt'
-c         path2=trim(path2)
-c       end if
+*-----------------------------------------------------------------------
+*  Make sure destination directory exists (once is enough)
+*-----------------------------------------------------------------------
+      call execute_command_line('mkdir -p ' // trim(outdir))
 
-c c     If ".txt" is found, construct path2 without ".txt"
-c       if (pos > 0) then
-c         path3 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1   // trim(inputFileName(:pos-1)) // '_2S_pred_CRUST1.txt'
-c         path3=trim(path3)
-c       else
-c         path3 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1          // trim(inputFileName) // '_2S_pred_CRUST1.txt'
-c         path3=trim(path3)
-c       end if
-
-c c     If ".txt" is found, construct path2 without ".txt"
-c       if (pos > 0) then
-c         path4 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1   // trim(inputFileName(:pos-1)) // '_3S_pred_CRUST1.txt'
-c         path4=trim(path4)
-c       else
-c         path4 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1          // trim(inputFileName) // '_3S_pred_CRUST1.txt'
-c         path4=trim(path4)
-c       end if
-
-c c     If ".txt" is found, construct path2 without ".txt"
-c       if (pos > 0) then
-c         path5 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1   // trim(inputFileName(:pos-1)) // '_4S_pred_CRUST1.txt'
-c         path5=trim(path5)
-c       else
-c         path5 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1          // trim(inputFileName) // '_4S_pred_CRUST1.txt'
-c         path5=trim(path5)
-c       end if
-
-c c     If ".txt" is found, construct path2 without ".txt"
-c       if (pos > 0) then
-c         path6 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1   // trim(inputFileName(:pos-1)) // '_5S_pred_CRUST1.txt'
-c         path6=trim(path6)
-c       else
-c         path6 =  "/media/will/WS/" //trim(newVar) // "/" 
-c      1          // trim(inputFileName) // '_5S_pred_CRUST1.txt'
-c         path6=trim(path6)
-c       end if
-
-cc     If ".txt" is found, construct path2 without ".txt"
-c      if (pos > 0) then
-c        path7 = '/data/will/TERRA' // trim(part2)
-c     1          // trim(inputFileName(:pos-1)) // '_6S_pred_CRUST1.txt'
-c        path7=trim(path7)
-c      else
-c        path7 = '/data/will/TERRA' // trim(part2)
-c     1          // trim(inputFileName) // '_6S_pred_CRUST1.txt'
-c        path7=trim(path7)
-c      end if
-
-c      !--- figure out the directory portion of path1 (everything up to the last '/') ---
-      slash_pos = 0
-      do i = 1, len_trim(path1)
-        if (path1(i:i) == '/') slash_pos = i
+*-----------------------------------------------------------------------
+*  Fundamental mode 0S   (indices 2 … 449)
+*-----------------------------------------------------------------------
+      open(1, file=path1, access='sequential', position='append')
+      do i = 2, 449
+         write(1,*) trim(inputFileName), i,
+     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
       end do
-      path_dir = path1(:slash_pos-1)
-
-c      !--- create it (and any missing parents) if it doesn’t already exist ---
-      call execute_command_line('mkdir -p '//trim(path_dir))
-
-c     fundamental modes
-      open(1,file=path1,access='sequential',position='append')
-      do i=2,449
-            write(1,*)trim(inputFileName),i,tcom_all(i),
-     1      cvel_all(i),gcom_all(i),qmod_all(i)
-      enddo
       close(1)
 
-c c     first overtone
-c       open(2,file=path2,access='sequential',position='append')
-c       do i=450,897
-c             write(2,*)trim(inputFileName),i-448,tcom_all(i),
-c      1      cvel_all(i),gcom_all(i),qmod_all(i)
-c       enddo
-c       close(2)
+*-----------------------------------------------------------------------
+*  First overtone 1S  (indices 450 … 897)
+*-----------------------------------------------------------------------
+      open(2, file=path2, access='sequential', position='append')
+      do i = 450, 897
+         write(2,*) trim(inputFileName), i-448,
+     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
+      end do
+      close(2)
 
-c c     second overtone
-c       open(3,file=path3,access='sequential',position='append')
-c       do i=898,1345
-c             write(3,*)trim(inputFileName),i-896,tcom_all(i),
-c      1      cvel_all(i),gcom_all(i),qmod_all(i)
-c       enddo
-c       close(3)
+*-----------------------------------------------------------------------
+*  Second overtone 2S  (indices 898 … 1345)
+*-----------------------------------------------------------------------
+      open(3, file=path3, access='sequential', position='append')
+      do i = 898, 1345
+         write(3,*) trim(inputFileName), i-896,
+     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
+      end do
+      close(3)
 
-c c     third overtone
-c       open(4,file=path4,access='sequential',position='append')
-c       do i=1346,1793
-c             write(4,*)trim(inputFileName),i-1344,tcom_all(i),
-c      1      cvel_all(i),gcom_all(i),qmod_all(i)
-c       enddo
-c       close(4)
+*-----------------------------------------------------------------------
+*  Third overtone 3S  (indices 1346 … 1793)
+*-----------------------------------------------------------------------
+      open(4, file=path4, access='sequential', position='append')
+      do i = 1346, 1793
+         write(4,*) trim(inputFileName), i-1344,
+     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
+      end do
+      close(4)
 
-c c     fourth overtone
-c       open(5,file=path5,access='sequential',position='append')
-c       do i=1794,2241
-c             write(5,*)trim(inputFileName),i-1792,tcom_all(i),
-c      1      cvel_all(i),gcom_all(i),qmod_all(i)
-c       enddo
-c       close(5)
+*-----------------------------------------------------------------------
+*  Fourth overtone 4S  (indices 1794 … 2241)
+*-----------------------------------------------------------------------
+c      open(5, file=path5, access='sequential', position='append')
+c      do i = 1794, 2241
+c         write(5,*) trim(inputFileName), i-1792,
+c     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
+c      end do
+c      close(5)
 
-c c     fifth overtone
-c       open(6,file=path6,access='sequential',position='append')
-c       do i=2242,2689
-c             write(6,*)trim(inputFileName),i-2240,tcom_all(i),
-c      1      cvel_all(i),gcom_all(i),qmod_all(i)
-c       enddo
-c       close(6)
-
-c     sixth overtone **** wk=3000 means we can't do this one....
-c      open(7,file=path7,access='sequential',position='append')
-c      do i=2690,3137
-c            write(7,*)trim(inputFileName),i-2688,tcom_all(i),
-c     1      cvel_all(i),gcom_all(i),qmod_all(i)
-c      enddo
-c      close(7)
-
-      enddo
-      enddo
+*-----------------------------------------------------------------------
+*  Fifth overtone 5S  (indices 2242 … 2689)
+*-----------------------------------------------------------------------
+      open(6, file=path6, access='sequential', position='append')
+      do i = 2242, 2689
+         write(6,*) trim(inputFileName), i-2240,
+     1              tcom_all(i), cvel_all(i), gcom_all(i), qmod_all(i)
+      end do
+      close(6)
 
       end program
